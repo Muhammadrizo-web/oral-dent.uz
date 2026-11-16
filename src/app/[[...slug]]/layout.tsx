@@ -14,10 +14,10 @@ export function generateStaticParams() {
 }
 
 const FONTS: Record<Lang, string[]> = {
-  uz: ['montserrat-latin-800-normal', 'manrope-latin-400-normal'],
-  en: ['montserrat-latin-800-normal', 'manrope-latin-400-normal'],
-  ru: ['montserrat-cyrillic-800-normal', 'manrope-cyrillic-400-normal'],
-  zh: ['montserrat-latin-800-normal'],
+  uz: ['manrope-latin-500-normal', 'manrope-latin-400-normal', 'cormorant-garamond-latin-500-italic'],
+  en: ['manrope-latin-500-normal', 'manrope-latin-400-normal', 'cormorant-garamond-latin-500-italic'],
+  ru: ['manrope-cyrillic-500-normal', 'manrope-cyrillic-400-normal', 'cormorant-garamond-cyrillic-500-italic'],
+  zh: ['manrope-latin-500-normal'],
 };
 
 export default async function RootLayout({ children, params }: { children: ReactNode; params: Promise<{ slug?: string[] }> }) {

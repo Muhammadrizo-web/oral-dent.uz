@@ -9,7 +9,8 @@ declare global {
 
 const REVEAL =
   '.sec-head, .svc, .steps li, .doc-strip .photo, .doc-txt, .vtile, .rev, .cert, .free-card, .after-box, .price-note, ' +
-  '.cta-card, .c-block, .lic, .vid, .route, .vnote, .facts li, .prose > div, .book > *';
+  '.cta-card, .c-block, .lic, .vid, .route, .vnote, .facts li, .prose > div, .book > *, ' +
+  '.x-svc li, .x-steps li, .x-doc-photo, .x-doc-txt, .x-tile, .x-facts li, .phead h1, .phead .lead';
 
 /*
  * The whole page tree (this component included) is re-mounted on every navigation,
@@ -104,6 +105,95 @@ export default function Motion({ lang, isHome, homes, metrikaId }: {
     /* safety net: anything still hidden after 4 s is shown */
     const safety = window.setTimeout(() => els.forEach((el) => el.classList.add('in')), 4000);
     return () => { io.disconnect(); window.clearTimeout(safety); };
+  }, [pathname]);
+
+  /* premium layer: split headline, glass header, parallax, magnetic buttons, lazy video */
+  useEffect(() => {
+    const rm = reduceMotion();
+    const cleanups: Array<() => void> = [];
+
+    /* headline: every word rises out of its own mask */
+    document.querySelectorAll<HTMLElement>('[data-split]:not([data-split-done])').forEach((el) => {
+      el.dataset.splitDone = '1';
+      let i = 0;
+      const walk = (node: Node) => {
+        for (const ch of Array.from(node.childNodes)) {
+          if (ch.nodeType === 3) {
+            const parts = (ch.textContent ?? '').split(/(\s+)/);
+            const frag = document.createDocumentFragment();
+            for (const w of parts) {
+              if (!w) continue;
+              if (/^\s+$/.test(w)) { frag.appendChild(document.createTextNode(w)); continue; }
+              const o = document.createElement('span'); o.className = 'w';
+              const n = document.createElement('span'); n.textContent = w;
+              n.style.setProperty('--wi', String(i++));
+              o.appendChild(n); frag.appendChild(o);
+            }
+            ch.replaceWith(frag);
+          } else if (ch.nodeType === 1) walk(ch);
+        }
+      };
+      walk(el);
+      requestAnimationFrame(() => el.classList.add('split-in'));
+    });
+
+    /* header turns to frosted glass once the page moves */
+    const hdr = document.querySelector('.hdr');
+    let lastY = window.scrollY;
+    const speedEls = rm ? [] : Array.from(document.querySelectorAll<HTMLElement>('[data-speed]'));
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        hdr?.classList.toggle('scrolled', y > 24);
+        hdr?.classList.toggle('hide', y > 400 && y > lastY + 4);
+        if (y < lastY - 4) hdr?.classList.remove('hide');
+        lastY = y;
+        const vh = window.innerHeight;
+        for (const el of speedEls) {
+          const r = el.parentElement?.getBoundingClientRect();
+          if (!r || r.bottom < -200 || r.top > vh + 200) continue;
+          const c = r.top + r.height / 2 - vh / 2;
+          el.style.setProperty('--py', `${(c * Number(el.dataset.speed)).toFixed(1)}px`);
+        }
+        ticking = false;
+      });
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    cleanups.push(() => window.removeEventListener('scroll', onScroll));
+
+    /* magnetic primary buttons on precise pointers */
+    if (!rm && window.matchMedia('(pointer: fine)').matches) {
+      document.querySelectorAll<HTMLElement>('[data-magnetic], .btn-primary').forEach((b) => {
+        const move = (e: PointerEvent) => {
+          const r = b.getBoundingClientRect();
+          b.style.setProperty('--mx', `${((e.clientX - r.left - r.width / 2) * 0.18).toFixed(1)}px`);
+          b.style.setProperty('--my', `${((e.clientY - r.top - r.height / 2) * 0.3).toFixed(1)}px`);
+        };
+        const leave = () => { b.style.setProperty('--mx', '0px'); b.style.setProperty('--my', '0px'); };
+        b.addEventListener('pointermove', move);
+        b.addEventListener('pointerleave', leave);
+        cleanups.push(() => { b.removeEventListener('pointermove', move); b.removeEventListener('pointerleave', leave); });
+      });
+    }
+
+    /* clinic videos play only while on screen */
+    const vids = Array.from(document.querySelectorAll<HTMLVideoElement>('video[data-lazyplay]'));
+    if (vids.length && 'IntersectionObserver' in window && !rm) {
+      const vio = new IntersectionObserver((es) => {
+        for (const e of es) {
+          const v = e.target as HTMLVideoElement;
+          if (e.isIntersecting) { v.play().catch(() => {}); } else v.pause();
+        }
+      }, { threshold: 0.35 });
+      vids.forEach((v) => vio.observe(v));
+      cleanups.push(() => vio.disconnect());
+    }
+
+    return () => cleanups.forEach((f) => f());
   }, [pathname]);
 
   return null;
