@@ -126,10 +126,10 @@
     "zh": "诊所环境 — Oral Dent"
    },
    "desc": {
-    "uz": "Ko'chadan xonagacha oltita qisqa video. Oral Dent, Yunusobod-2, 8-uy, 1-qavat. Mo'ljal: Asaka bank.",
-    "ru": "Шесть коротких видео: от улицы до кабинета. Oral Dent, Юнусабад-2, дом 8, 1 этаж. Ориентир: Асака банк.",
-    "en": "Six short videos from the street to the treatment room. Oral Dent, Yunusabad-2, building 8, 1st floor. Landmark: Asaka Bank.",
-    "zh": "从街道到诊室的六段短视频。Oral Dent，Yunusabad-2 区 8 号楼 1 层，地标：Asaka 银行。"
+    "uz": "Klinikadan ikkita qisqa video. Oral Dent, Yunusobod-2, 8-uy, 1-qavat. Mo'ljal: Asaka bank.",
+    "ru": "Два коротких видео из клиники. Oral Dent, Юнусабад-2, дом 8, 1 этаж. Ориентир: Асака банк.",
+    "en": "Two short videos from the clinic. Oral Dent, Yunusabad-2, building 8, 1st floor. Landmark: Asaka Bank.",
+    "zh": "诊所的两段短视频。Oral Dent，Yunusabad-2 区 8 号楼 1 层，地标：Asaka 银行。"
    }
   },
   "reviews": {
@@ -300,11 +300,6 @@
    "id": "aligners",
    "ill": "aligner",
    "p": null
-  },
-  {
-   "id": "kids",
-   "ill": "kids",
-   "p": null
   }
  ],
  "featured": [
@@ -322,26 +317,9 @@
   "hygiene",
   "whitening",
   "veneers",
-  "aligners",
-  "kids"
+  "aligners"
  ],
  "videos": [
-  [
-   "v7131",
-   "v1"
-  ],
-  [
-   "v7132",
-   "v2"
-  ],
-  [
-   "v7133",
-   "v3"
-  ],
-  [
-   "v7137",
-   "v4"
-  ],
   [
    "v7136",
    "v5"
@@ -352,8 +330,7 @@
   ]
  ],
  "home_videos": [
-  "v7131",
-  "v7133",
+  "v7136",
   "v7135"
  ],
  "certs": [
@@ -674,7 +651,7 @@
    "tgBtn": "Telegramda yozish",
    "orCall": "yoki qo'ng'iroq qiling:",
    "heroEyebrow": "Yunusobod-2 dagi stomatologiya, Toshkent",
-   "heroH1": "Avval narxni aytamiz, <em>keyin davolaymiz.</em>",
+   "heroH1": "Sog'lig'ingiz sari yo'l <em>shu yerdan boshlanadi.</em>",
    "heroLead": "Bepul ko'rik, so'ng har bir bosqich narxi yozilgan davolash rejasi. Shifokor asbobni qo'liga olishidan oldin siz summaga rozilik berasiz.",
    "ctaMain": "Bepul ko'rikka yozilish",
    "trust1": "Ko'rik bepul",
@@ -718,10 +695,6 @@
    "clinicH2": "Qayerga kelishingizni ko'ring",
    "clinicP": "Videolar ochilish kuni, 2024-yil 2-sentabrda olingan.",
    "clinicMore": "Klinikani ko'rish →",
-   "v1": "Ko'cha va tashqi belgi",
-   "v2": "Fasad, zina va pandus",
-   "v3": "Qabulxona va xona",
-   "v4": "Qora kreslo bilan xona",
    "v5": "Ko'k kreslo bilan xona",
    "v6": "Sterilizatsiya xonasi",
    "revEyebrow": "Fikrlar",
@@ -763,7 +736,6 @@
    "s_whitening": "Tishlarni oqartirish",
    "s_veneers": "Vinirlar",
    "s_aligners": "Elaynerlar",
-   "s_kids": "Bolalar stomatologiyasi",
    "d_caries": "Zararlangan joyni tozalab, tishni plomba bilan tiklaymiz.",
    "d_pulpit": "Tish nervi yallig'lanishi va kanallarni davolaymiz.",
    "d_perio": "Tish ildizi atrofidagi to'qimalar yallig'lanishini davolaymiz.",
@@ -776,7 +748,6 @@
    "d_whitening": "Professional oqartirish. Natija tishlarning dastlabki rangiga bog'liq.",
    "d_veneers": "Old tishlar uchun yupqa keramik qoplamalar.",
    "d_aligners": "Shaffof kappalar bilan prikusni to'g'rilash.",
-   "d_kids": "Bolalarda sut va doimiy tishlarni davolash.",
    "docH1": "Sizning shifokoringiz",
    "statExp": "yillik amaliyot",
    "statCerts": "sertifikat, 2022–2025",
@@ -790,7 +761,7 @@
    "licOpen": "Litsenziyani ochish",
    "certOpen": "ochish",
    "clinicH1": "Klinika",
-   "clinicLead": "Oltita qisqa video: ko'chadan xonagacha. Ovozsiz.",
+   "clinicLead": "Klinikadan ikkita qisqa video. Ovozsiz.",
    "vidNote": "2024-yil 2-sentabrda, ochilish kuni olingan.",
    "play": "Ijro etish",
    "pause": "To'xtatish",
@@ -900,7 +871,7 @@
    "tgBtn": "Написать в Telegram",
    "orCall": "или позвоните:",
    "heroEyebrow": "Стоматология в Юнусабаде-2, Ташкент",
-   "heroH1": "Сначала цена, <em>потом лечение.</em>",
+   "heroH1": "Ваш путь к здоровью <em>начинается здесь.</em>",
    "heroLead": "Бесплатный осмотр, затем план лечения с ценой каждого этапа. Вы соглашаетесь на сумму до того, как врач возьмёт инструмент.",
    "ctaMain": "Записаться на бесплатный осмотр",
    "trust1": "Осмотр бесплатно",
@@ -944,10 +915,6 @@
    "clinicH2": "Посмотрите, куда придёте",
    "clinicP": "Видео сняты в день открытия, 2 сентября 2024 года.",
    "clinicMore": "Смотреть клинику →",
-   "v1": "Улица и вывеска",
-   "v2": "Фасад, лестница и пандус",
-   "v3": "Ресепшн и кабинет",
-   "v4": "Кабинет с чёрным креслом",
    "v5": "Кабинет с синим креслом",
    "v6": "Стерилизационная",
    "revEyebrow": "Отзывы",
@@ -989,7 +956,6 @@
    "s_whitening": "Отбеливание",
    "s_veneers": "Виниры",
    "s_aligners": "Элайнеры",
-   "s_kids": "Детская стоматология",
    "d_caries": "Очищаем поражённый участок и восстанавливаем зуб пломбой.",
    "d_pulpit": "Лечим воспаление нерва зуба и каналы.",
    "d_perio": "Лечим воспаление тканей у корня зуба.",
@@ -1002,7 +968,6 @@
    "d_whitening": "Профессиональное отбеливание. Результат зависит от исходного цвета зубов.",
    "d_veneers": "Тонкие керамические накладки на передние зубы.",
    "d_aligners": "Исправление прикуса прозрачными капами.",
-   "d_kids": "Лечение молочных и постоянных зубов у детей.",
    "docH1": "Ваш врач",
    "statExp": "лет практики",
    "statCerts": "сертификатов, 2022–2025",
@@ -1016,7 +981,7 @@
    "licOpen": "Открыть лицензию",
    "certOpen": "открыть",
    "clinicH1": "Клиника",
-   "clinicLead": "Шесть коротких видео: от улицы до кабинета. Без звука.",
+   "clinicLead": "Два коротких видео из клиники. Без звука.",
    "vidNote": "Снято 2 сентября 2024 года, в день открытия.",
    "play": "Смотреть",
    "pause": "Пауза",
@@ -1126,7 +1091,7 @@
    "tgBtn": "Message on Telegram",
    "orCall": "or call:",
    "heroEyebrow": "Dental clinic in Yunusabad-2, Tashkent",
-   "heroH1": "Price first. <em>Treatment second.</em>",
+   "heroH1": "Your path to health <em>starts here.</em>",
    "heroLead": "A free check-up, then a treatment plan with the price of every step. You agree to the total before the dentist picks up an instrument.",
    "ctaMain": "Book a free check-up",
    "trust1": "Free check-up",
@@ -1170,10 +1135,6 @@
    "clinicH2": "See where you will come",
    "clinicP": "The videos were filmed on opening day, 2 September 2024.",
    "clinicMore": "See the clinic →",
-   "v1": "Street and sign",
-   "v2": "Facade, steps and ramp",
-   "v3": "Reception and treatment room",
-   "v4": "Room with the black chair",
    "v5": "Room with the blue chair",
    "v6": "Sterilisation room",
    "revEyebrow": "Reviews",
@@ -1215,7 +1176,6 @@
    "s_whitening": "Teeth whitening",
    "s_veneers": "Veneers",
    "s_aligners": "Clear aligners",
-   "s_kids": "Children's dentistry",
    "d_caries": "We clean out the damaged area and restore the tooth with a filling.",
    "d_pulpit": "Treatment of an inflamed tooth nerve and root canals.",
    "d_perio": "Treatment of inflammation of the tissues around the tooth root.",
@@ -1228,7 +1188,6 @@
    "d_whitening": "Professional whitening. Results depend on your natural tooth shade.",
    "d_veneers": "Thin ceramic shells for the front teeth.",
    "d_aligners": "Correcting the bite with clear aligners.",
-   "d_kids": "Treatment of baby and permanent teeth in children.",
    "docH1": "Your dentist",
    "statExp": "years of practice",
    "statCerts": "certificates, 2022–2025",
@@ -1242,7 +1201,7 @@
    "licOpen": "Open the licence",
    "certOpen": "open",
    "clinicH1": "The clinic",
-   "clinicLead": "Six short videos: from the street to the treatment room. No sound.",
+   "clinicLead": "Two short videos from the clinic. No sound.",
    "vidNote": "Filmed on 2 September 2024, opening day.",
    "play": "Play",
    "pause": "Pause",
@@ -1352,7 +1311,7 @@
    "tgBtn": "在 Telegram 联系",
    "orCall": "或致电：",
    "heroEyebrow": "塔什干 Yunusabad-2 牙科诊所",
-   "heroH1": "先说价格，<em>再做治疗。</em>",
+   "heroH1": "您的健康之路<em>从这里开始。</em>",
    "heroLead": "先免费检查，再给出每个步骤都标明价格的治疗方案。医生动手之前，您已确认总价。",
    "ctaMain": "预约免费检查",
    "trust1": "免费检查",
@@ -1396,10 +1355,6 @@
    "clinicH2": "先看看您要来的地方",
    "clinicP": "视频拍摄于开业当天，2024 年 9 月 2 日。",
    "clinicMore": "查看诊所 →",
-   "v1": "街道与招牌",
-   "v2": "外立面、台阶与坡道",
-   "v3": "前台与诊室",
-   "v4": "黑色牙椅诊室",
    "v5": "蓝色牙椅诊室",
    "v6": "消毒室",
    "revEyebrow": "评价",
@@ -1441,7 +1396,6 @@
    "s_whitening": "牙齿美白",
    "s_veneers": "瓷贴面",
    "s_aligners": "隐形矫正",
-   "s_kids": "儿童牙科",
    "d_caries": "清理病变部位，用补牙材料恢复牙齿。",
    "d_pulpit": "治疗牙神经炎症和根管。",
    "d_perio": "治疗牙根周围组织的炎症。",
@@ -1454,7 +1408,6 @@
    "d_whitening": "专业美白，效果取决于牙齿原本的颜色。",
    "d_veneers": "用于前牙的薄瓷贴片。",
    "d_aligners": "用透明牙套矫正咬合。",
-   "d_kids": "治疗儿童的乳牙和恒牙。",
    "docH1": "您的医生",
    "statExp": "年执业经验",
    "statCerts": "张证书，2022–2025",
@@ -1468,7 +1421,7 @@
    "licOpen": "查看执照",
    "certOpen": "查看",
    "clinicH1": "诊所",
-   "clinicLead": "六段短视频：从街道到诊室。无声音。",
+   "clinicLead": "诊所的两段短视频。无声音。",
    "vidNote": "拍摄于 2024 年 9 月 2 日，开业当天。",
    "play": "播放",
    "pause": "暂停",
