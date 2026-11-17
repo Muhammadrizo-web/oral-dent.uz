@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { LANGS, SITE, dict, pagePath } from '@/content/i18n';
 import { SPRITE } from '@/content/sprite';
 import { MobileBar, SiteFooter, SiteHeader } from '@/components/Chrome';
+import { THEME_BOOT } from '@/components/client/Theme';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -15,7 +16,10 @@ export const metadata: Metadata = {
 export default function GlobalNotFound() {
   const t = dict('uz');
   return (
-    <html lang="uz" className="js">
+    <html lang="uz" data-theme="light" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
+      </head>
       <body>
         <div aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: SPRITE }} />
         <SiteHeader lang="uz" page="home" />

@@ -851,7 +851,9 @@
    "nfP": "Havola eskirgan bo'lishi mumkin. Bosh sahifadan boshlang yoki bepul ko'rikka yoziling.",
    "toHome": "Bosh sahifaga",
    "tyH1": "Ariza yuborildi",
-   "prUpd": "Yangilangan sana"
+   "prUpd": "Yangilangan sana",
+   "themeLabel": "Yorug' yoki qorong'i rejim",
+   "scrollHint": "Keyingisi"
   },
   "ru": {
    "navHome": "Главная",
@@ -1063,7 +1065,9 @@
    "nfP": "Возможно, ссылка устарела. Начните с главной или запишитесь на бесплатный осмотр.",
    "toHome": "На главную",
    "tyH1": "Заявка отправлена",
-   "prUpd": "Обновлено"
+   "prUpd": "Обновлено",
+   "themeLabel": "Светлая или тёмная тема",
+   "scrollHint": "Дальше"
   },
   "en": {
    "navHome": "Home",
@@ -1275,7 +1279,9 @@
    "nfP": "The link may be out of date. Start from the home page or book a free check-up.",
    "toHome": "Home page",
    "tyH1": "Request sent",
-   "prUpd": "Updated"
+   "prUpd": "Updated",
+   "themeLabel": "Light or dark theme",
+   "scrollHint": "Next"
   },
   "zh": {
    "navHome": "首页",
@@ -1487,7 +1493,9 @@
    "nfP": "链接可能已失效。请返回首页，或预约免费检查。",
    "toHome": "返回首页",
    "tyH1": "预约已发送",
-   "prUpd": "更新日期"
+   "prUpd": "更新日期",
+   "themeLabel": "浅色或深色主题",
+   "scrollHint": "下一页"
   }
  }
 }

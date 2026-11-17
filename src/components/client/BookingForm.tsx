@@ -246,7 +246,7 @@ export default function BookingForm({ s, lang, services, phone, phoneDisplay, tg
           </form>
         ) : (
           <div className="done" tabIndex={-1} ref={doneRef}>
-            <span className="eyebrow">{s.doneEyebrow}</span>
+            <span className="kicker">{s.doneEyebrow}</span>
             <h2>{(s.thanks ?? '').replace('{n}', name.trim())}</h2>
             <dl>
               <dt>{s.fPhone}</dt><dd>{formatPhone(tel)}</dd>

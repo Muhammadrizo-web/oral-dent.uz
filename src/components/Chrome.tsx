@@ -15,6 +15,7 @@ export function SiteHeader({ lang, page }: { lang: Lang; page: PageKey }) {
       menuLabel={t.menu ?? 'Menu'}
       ctaShort={t.ctaShort ?? ''}
       ctaMain={t.ctaMain ?? ''}
+      themeLabel={t.themeLabel ?? 'Theme'}
       nav={nav}
       langSwitch={<LangSwitch lang={lang} page={page} />}
     />
@@ -26,10 +27,17 @@ export function SiteFooter({ lang, page }: { lang: Lang; page: PageKey }) {
   const links: PageKey[] = ['services', 'doctor', 'clinic', 'reviews', 'booking', 'contacts'];
   return (
     <footer className="foot on-dark">
+      <div className="wrap foot-cta">
+        <Link className="foot-big" href={pagePath('booking', lang)}>
+          <span>{t.ctaShort}</span>
+          <svg viewBox="0 0 220 220" aria-hidden="true"><use href="#mk" /></svg>
+        </Link>
+        <a className="foot-tel num" href={`tel:${S.phone}`} data-goal="tel">{S.phone_display}</a>
+      </div>
       <div className="wrap grid">
-        <div className="fcol">
+        <div className="fcol fbrand">
           <Image src="/brand/logo-light.png" alt="Oral Dent" width={104} height={44} quality={80} />
-          <p style={{ marginTop: 12, maxWidth: '34ch' }}>{t.footTag}</p>
+          <p>{t.footTag}</p>
           <LangSwitch lang={lang} page={page} />
         </div>
         <div className="fcol">
@@ -40,7 +48,6 @@ export function SiteFooter({ lang, page }: { lang: Lang; page: PageKey }) {
         </div>
         <div className="fcol">
           <p className="fh">{t.navContacts}</p>
-          <a href={`tel:${S.phone}`} className="num" data-goal="tel">{S.phone_display}</a>
           <a href={TG_URL} target="_blank" rel="noopener" data-goal="tg">@{S.telegram}</a>
           <span>{t.cAddr}</span>
           <span>{t.licShort}</span>

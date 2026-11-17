@@ -58,7 +58,7 @@ export function HoursRows({ rows }: { rows: { days: number[]; label: string; val
 
 /* ---------- count-up numbers (the static number is the resting state) ---------- */
 
-export function Count({ to }: { to: number }) {
+export function Count({ to, sep = '', dur = 900 }: { to: number; sep?: string; dur?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const [val, setVal] = useState(to);
   useEffect(() => {
@@ -68,23 +68,35 @@ export function Count({ to }: { to: number }) {
     try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { /* ignore */ }
     if (reduce || !('IntersectionObserver' in window)) return;
     let raf = 0;
-    const io = new IntersectionObserver((entries) => {
-      if (!entries.some((e) => e.isIntersecting)) return;
+    let seen = false;
+    let started = false;
+    /* on the home page a number waits until its full-screen page is the current one */
+    const slide = el.closest('.fp-slide');
+    const start = () => {
+      if (started || !seen || (slide && !slide.classList.contains('is-active'))) return;
+      started = true;
       io.disconnect();
-      const t0 = performance.now();
-      const dur = 900;
+      window.removeEventListener('fp:change', start);
+      const t0 = performance.now() + 250;
       const step = (ts: number) => {
-        const k = Math.min(1, (ts - t0) / dur);
+        const k = Math.min(1, Math.max(0, (ts - t0) / dur));
         setVal(Math.round(to * (1 - Math.pow(1 - k, 3))));
         if (k < 1) raf = requestAnimationFrame(step);
       };
       setVal(0);
       raf = requestAnimationFrame(step);
+    };
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      seen = true;
+      start();
     }, { threshold: 0.4 });
     io.observe(el);
-    return () => { io.disconnect(); cancelAnimationFrame(raf); };
-  }, [to]);
-  return <span className="count" ref={ref}>{val}</span>;
+    window.addEventListener('fp:change', start);
+    return () => { io.disconnect(); window.removeEventListener('fp:change', start); cancelAnimationFrame(raf); };
+  }, [to, dur]);
+  const txt = sep ? String(val).replace(/\B(?=(\d{3})+(?!\d))/g, sep) : String(val);
+  return <span className="count" ref={ref}>{txt}</span>;
 }
 
 /* ---------- copy phone number ---------- */

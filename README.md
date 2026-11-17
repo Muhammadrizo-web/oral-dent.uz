@@ -28,7 +28,7 @@
   - `settings.url` — адрес сайта после подключения домена (canonical, hreflang, sitemap).
   - `settings.metrika_id` — номер счётчика Яндекс Метрики (пусто = Метрика выключена).
 - Фото и видео — `public/img`, `public/media`, `public/brand` (размеры картинок — `src/content/media.json`).
-- Дизайн — `src/app/globals.css` (переменные цветов в начале файла; Tailwind-утилиты доступны в разметке).
+- Дизайн — `src/app/globals.css`: цвета обеих тем (светлой и тёмной) — переменные в блоках `[data-theme="light"]` и `[data-theme="dark"]` в начале файла. Переключатель темы — `src/components/client/Theme.tsx`, анимации прокрутки — `src/components/client/Motion.tsx`.
 - Страницы — `src/components/pages/*.tsx`, шапка/подвал — `src/components/Chrome.tsx`.
 - Приём заявок — `src/app/api/lead/route.ts`.
 

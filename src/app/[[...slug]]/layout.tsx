@@ -5,6 +5,8 @@ import { LANGS, ROUTES, SITE, S, dict, pagePath, resolveRoute, type Lang } from 
 import { SPRITE } from '@/content/sprite';
 import { MobileBar, SiteFooter, SiteHeader } from '@/components/Chrome';
 import Motion from '@/components/client/Motion';
+import Cursor from '@/components/client/Cursor';
+import { THEME_BOOT } from '@/components/client/Theme';
 import '../globals.css';
 
 /* every page is pre-rendered at build time; unknown URLs get the 404 page */
@@ -14,9 +16,9 @@ export function generateStaticParams() {
 }
 
 const FONTS: Record<Lang, string[]> = {
-  uz: ['manrope-latin-500-normal', 'manrope-latin-400-normal', 'cormorant-garamond-latin-500-italic'],
-  en: ['manrope-latin-500-normal', 'manrope-latin-400-normal', 'cormorant-garamond-latin-500-italic'],
-  ru: ['manrope-cyrillic-500-normal', 'manrope-cyrillic-400-normal', 'cormorant-garamond-cyrillic-500-italic'],
+  uz: ['manrope-latin-400-normal', 'manrope-latin-500-normal'],
+  en: ['manrope-latin-400-normal', 'manrope-latin-500-normal'],
+  ru: ['manrope-cyrillic-400-normal', 'manrope-cyrillic-500-normal'],
   zh: ['manrope-latin-500-normal'],
 };
 
@@ -30,16 +32,25 @@ export default async function RootLayout({ children, params }: { children: React
   for (const f of FONTS[lang]) preload(`/fonts/${f}.woff2`, { as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' });
 
   return (
-    <html lang={SITE.html_lang[lang]} data-page={page} suppressHydrationWarning>
+    <html lang={SITE.html_lang[lang]} data-page={page} data-theme="light" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
+      </head>
       <body>
+        {/* first visit of the session: the brand mark draws itself, then the curtain lifts (pure CSS, removes itself) */}
+        <div className="intro-veil" aria-hidden="true">
+          <svg viewBox="-110 -110 220 220"><path className="a" d="M45.47 -62.58A77.35 77.35 0 0 1 -45.47 62.58" /><circle className="d" r="40" /></svg>
+        </div>
         {/* without JavaScript the tooth chart can't work, so it is hidden; the form below still posts */}
         <noscript><style>{'.jaw-col{display:none}'}</style></noscript>
         <a className="skip" href="#main">{t.skip}</a>
+        <span className="page-prog" aria-hidden="true" />
         <div aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: SPRITE }} />
         <SiteHeader lang={lang} page={page} />
         <main id="main" key={`${lang}-${page}`}>{children}</main>
         <SiteFooter lang={lang} page={page} />
         <MobileBar lang={lang} />
+        <Cursor />
         <Motion lang={lang} isHome={page === 'home'} metrikaId={metrika}
           homes={Object.fromEntries(LANGS.map((l) => [l, pagePath('home', l)]))} />
         {metrika ? (

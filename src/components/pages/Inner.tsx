@@ -1,11 +1,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { SITE, S, SERVICE, TG_URL, dict, pagePath, type Lang } from '@/content/i18n';
+import { SITE, S, TG_URL, dict, pagePath, type Lang } from '@/content/i18n';
 import media from '@/content/media.json';
 import BookingForm from '../client/BookingForm';
 import { ClinicVideos, Lightbox } from '../client/Media';
 import { CopyPhone, Count, HoursRows, StatusPill } from '../client/Live';
-import { Cta, DoctorPhoto, Icon, Ill, PageHead, Reviews, ServiceCard } from '../ui';
+import { Cta, DoctorPhoto, Icon, PageHead, Reviews, ServiceCard } from '../ui';
 import { statusLabels } from './shared';
 
 const MEDIA: Record<string, number[]> = media;
@@ -22,18 +22,17 @@ export function Services({ lang }: { lang: Lang }) {
       <section className="sec">
         <div className="wrap">
           <div className="free-card">
-            <Ill name="diag" />
             <div><h2>{t.freeTitle}</h2><p>{t.freeP}</p></div>
             <div className="zero"><span>0</span><small>{t.cur}</small></div>
           </div>
-          <div className="sec-head" style={{ marginTop: 'clamp(28px,4vw,44px)' }}><span className="eyebrow">{t.priceEyebrow}</span><h2>{t.priceH2}</h2></div>
+          <div className="sec-head" style={{ marginTop: 'clamp(28px,4vw,44px)' }}><span className="kicker">{t.priceEyebrow}</span><h2>{t.priceH2}</h2></div>
           <div className="svc-grid">
             {SITE.services.filter((s) => s.p).map((sv) => <ServiceCard key={sv.id} sv={sv} lang={lang} />)}
           </div>
           <div className="after-box">
-            <div className="sec-head" style={{ margin: 0 }}><span className="eyebrow">{t.afterEyebrow}</span><h2>{t.afterH2}</h2><p className="lead">{t.afterP}</p></div>
+            <div className="sec-head" style={{ margin: 0 }}><span className="kicker">{t.afterEyebrow}</span><h2>{t.afterH2}</h2><p className="lead">{t.afterP}</p></div>
             <ul className="after-list">
-              {SITE.after.map((id) => { const sv = SERVICE(id); return <li key={id}><Ill name={sv.ill} /><span>{t[`s_${id}`]}</span></li>; })}
+              {SITE.after.map((id, i) => <li key={id}><i>{String(i + 1).padStart(2, '0')}</i><span>{t[`s_${id}`]}</span></li>)}
             </ul>
             <div className="btn-row"><Link className="btn btn-primary" href={pagePath('booking', lang)}>{t.ctaMain}</Link></div>
           </div>
@@ -56,7 +55,7 @@ export function Doctor({ lang }: { lang: Lang }) {
         <div className="wrap doc-strip">
           <DoctorPhoto lang={lang} eager />
           <div className="doc-txt">
-            <span className="eyebrow">{t.docEyebrow}</span>
+            <span className="kicker">{t.docEyebrow}</span>
             <h2 className="name">{t.docName}</h2>
             <p className="role">{t.docRole}</p>
             <div className="stats">
@@ -74,7 +73,7 @@ export function Doctor({ lang }: { lang: Lang }) {
       </section>
       <section className="sec tint">
         <div className="wrap">
-          <div className="sec-head"><span className="eyebrow">{t.docCertEyebrow}</span><h2>{t.docCertH2}</h2><p className="lead">{t.docCertP}</p></div>
+          <div className="sec-head"><span className="kicker">{t.docCertEyebrow}</span><h2>{t.docCertH2}</h2><p className="lead">{t.docCertP}</p></div>
           <div className="certs">
             {certs.map((c) => {
               const label = `${c.org}. ${c.ti}. ${c.dt}`;
@@ -94,7 +93,7 @@ export function Doctor({ lang }: { lang: Lang }) {
       </section>
       <section className="sec">
         <div className="wrap">
-          <div className="sec-head"><span className="eyebrow">{t.licEyebrow}</span><h2>{t.licH2}</h2></div>
+          <div className="sec-head"><span className="kicker">{t.licEyebrow}</span><h2>{t.licH2}</h2></div>
           <div className="lic">
             <button type="button" className="cert" data-full="/img/license.webp" data-cap={licCap} aria-label={t.licOpen}>
               <span className="im"><Image src="/img/license-t.jpg" alt="" width={dim('/img/license-t.jpg')[0]} height={dim('/img/license-t.jpg')[1]} sizes="240px" quality={80} /></span>
@@ -240,7 +239,7 @@ export function Thanks({ lang }: { lang: Lang }) {
   return (
     <section className="nf">
       <div className="wrap">
-        <span className="eyebrow">Oral Dent</span>
+        <span className="kicker">Oral Dent</span>
         <h1>{t.tyH1}</h1>
         <p className="lead">{t.doneP}</p>
         <div className="btn-row">

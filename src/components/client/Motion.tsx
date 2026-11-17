@@ -8,9 +8,8 @@ declare global {
 }
 
 const REVEAL =
-  '.sec-head, .svc, .steps li, .doc-strip .photo, .doc-txt, .vtile, .rev, .cert, .free-card, .after-box, .price-note, ' +
-  '.cta-card, .c-block, .lic, .vid, .route, .vnote, .facts li, .prose > div, .book > *, ' +
-  '.x-svc li, .x-steps li, .x-doc-photo, .x-doc-txt, .x-tile, .x-facts li, .phead h1, .phead .lead';
+  '.sec-head, .svc, .rev, .cert, .free-card, .after-box, .price-note, .c-block, .lic, .vid, .route, .vnote, ' +
+  '.prose > div, .book > *, .doc-txt > *, .doc-strip .photo, .cta-card';
 
 /*
  * The whole page tree (this component included) is re-mounted on every navigation,
@@ -38,6 +37,10 @@ export default function Motion({ lang, isHome, homes, metrikaId }: {
   useEffect(() => {
     if (booted) return;
     booted = true;
+    /* the intro veil plays once; later page changes must not replay it */
+    if (document.documentElement.classList.contains('intro')) {
+      window.setTimeout(() => document.documentElement.classList.remove('intro'), 3200);
+    }
     try {
       const saved = localStorage.getItem('od-lang');
       const fromOutside = !document.referrer || !document.referrer.startsWith(location.origin);
@@ -102,17 +105,20 @@ export default function Motion({ lang, isHome, homes, metrikaId }: {
       io.observe(el);
     }
     root.classList.add('rv-ready');
-    /* safety net: anything still hidden after 4 s is shown */
-    const safety = window.setTimeout(() => els.forEach((el) => el.classList.add('in')), 4000);
+    /* safety net: anything already on (or above) the screen after 3 s is shown, whatever the observer did */
+    const safety = window.setTimeout(() => els.forEach((el) => {
+      if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('in');
+    }), 3000);
     return () => { io.disconnect(); window.clearTimeout(safety); };
   }, [pathname]);
 
-  /* premium layer: split headline, glass header, parallax, magnetic buttons, lazy video */
+  /* motion layer: split headlines, header backing, page progress, magnetic buttons, lazy video */
   useEffect(() => {
     const rm = reduceMotion();
+    const root = document.documentElement;
     const cleanups: Array<() => void> = [];
 
-    /* headline: every word rises out of its own mask */
+    /* headlines: every word rises out of its own mask */
     document.querySelectorAll<HTMLElement>('[data-split]:not([data-split-done])').forEach((el) => {
       el.dataset.splitDone = '1';
       let i = 0;
@@ -134,50 +140,39 @@ export default function Motion({ lang, isHome, homes, metrikaId }: {
         }
       };
       walk(el);
-      requestAnimationFrame(() => el.classList.add('split-in'));
+      requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('split-in')));
     });
 
-    /* header turns to frosted glass once the page moves */
+    /* header gets a solid backing once the page moves (it never hides: nothing jumps under the pointer) */
     const hdr = document.querySelector('.hdr');
-    let lastY = window.scrollY;
-    const speedEls = rm ? [] : Array.from(document.querySelectorAll<HTMLElement>('[data-speed]'));
     let ticking = false;
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const y = window.scrollY;
-        hdr?.classList.toggle('scrolled', y > 24);
-        hdr?.classList.toggle('hide', y > 400 && y > lastY + 4);
-        if (y < lastY - 4) hdr?.classList.remove('hide');
-        lastY = y;
-        const vh = window.innerHeight;
-        for (const el of speedEls) {
-          const r = el.parentElement?.getBoundingClientRect();
-          if (!r || r.bottom < -200 || r.top > vh + 200) continue;
-          const c = r.top + r.height / 2 - vh / 2;
-          el.style.setProperty('--py', `${(c * Number(el.dataset.speed)).toFixed(1)}px`);
-        }
-        ticking = false;
-      });
+    const frame = () => {
+      const y = window.scrollY;
+      const max = Math.max(1, root.scrollHeight - window.innerHeight);
+      root.style.setProperty('--sp', Math.min(1, y / max).toFixed(4));
+      hdr?.classList.toggle('scrolled', y > 24);
+      ticking = false;
     };
-    onScroll();
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(frame); } };
+    frame();
     window.addEventListener('scroll', onScroll, { passive: true });
     cleanups.push(() => window.removeEventListener('scroll', onScroll));
 
-    /* magnetic primary buttons on precise pointers */
-    if (!rm && window.matchMedia('(pointer: fine)').matches) {
-      document.querySelectorAll<HTMLElement>('[data-magnetic], .btn-primary').forEach((b) => {
-        const move = (e: PointerEvent) => {
-          const r = b.getBoundingClientRect();
-          b.style.setProperty('--mx', `${((e.clientX - r.left - r.width / 2) * 0.18).toFixed(1)}px`);
-          b.style.setProperty('--my', `${((e.clientY - r.top - r.height / 2) * 0.3).toFixed(1)}px`);
-        };
-        const leave = () => { b.style.setProperty('--mx', '0px'); b.style.setProperty('--my', '0px'); };
-        b.addEventListener('pointermove', move);
-        b.addEventListener('pointerleave', leave);
-        cleanups.push(() => { b.removeEventListener('pointermove', move); b.removeEventListener('pointerleave', leave); });
-      });
+    /* the brand mark leans away from the pointer: the picture drifts, the arc turns a little */
+    const marks = rm ? [] : Array.from(document.querySelectorAll<HTMLElement>('.mark'));
+    if (marks.length && window.matchMedia('(pointer: fine)').matches) {
+      let px = 0, py = 0, pending = false;
+      const apply = () => {
+        pending = false;
+        for (const m of marks) { m.style.setProperty('--px', px.toFixed(3)); m.style.setProperty('--py', py.toFixed(3)); }
+      };
+      const onMove = (e: PointerEvent) => {
+        px = (e.clientX / window.innerWidth) * 2 - 1;
+        py = (e.clientY / window.innerHeight) * 2 - 1;
+        if (!pending) { pending = true; requestAnimationFrame(apply); }
+      };
+      window.addEventListener('pointermove', onMove, { passive: true });
+      cleanups.push(() => window.removeEventListener('pointermove', onMove));
     }
 
     /* clinic videos play only while on screen */
@@ -186,6 +181,7 @@ export default function Motion({ lang, isHome, homes, metrikaId }: {
       const vio = new IntersectionObserver((es) => {
         for (const e of es) {
           const v = e.target as HTMLVideoElement;
+          if (root.classList.contains('fp')) continue; // full-screen home: FullPage plays only the current page
           if (e.isIntersecting) { v.play().catch(() => {}); } else v.pause();
         }
       }, { threshold: 0.35 });
