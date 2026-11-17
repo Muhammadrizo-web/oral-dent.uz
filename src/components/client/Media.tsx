@@ -1,6 +1,9 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { createPortal } from 'react-dom';
+
+const noop = () => () => {};
 
 /* ---------- clinic videos: tap to play, one at a time, pause when scrolled away ---------- */
 
@@ -92,7 +95,10 @@ export function Lightbox({ closeLabel }: { closeLabel: string }) {
     return () => document.removeEventListener('keydown', onKey);
   }, [shot, close]);
 
-  return (
+  /* rendered into <body>, so it sits above the header and the full-screen slides */
+  const mounted = useSyncExternalStore(noop, () => true, () => false);
+  if (!mounted) return null;
+  return createPortal(
     <div className="lightbox" role="dialog" aria-modal="true" aria-label={shot?.cap} hidden={!shot}
       onClick={(e) => { if (e.target === e.currentTarget) close(); }}>
       <button ref={closeBtn} type="button" className="lb-x" aria-label={closeLabel} onClick={close}>×</button>
@@ -101,6 +107,7 @@ export function Lightbox({ closeLabel }: { closeLabel: string }) {
         <img src={shot.src} alt={shot.cap} />
       ) : null}
       <p>{shot?.cap}</p>
-    </div>
+    </div>,
+    document.body,
   );
 }

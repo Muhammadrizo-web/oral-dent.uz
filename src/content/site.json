@@ -22,7 +22,10 @@
   "metrika_id": "",
   "privacy_retention_days": 30,
   "privacy_updated": "15.11.2026",
-  "lic_until": "2029-08-26"
+  "lic_until": "2029-08-26",
+  "instagram": "",
+  "rating_yandex": 4.5,
+  "rating_gis": 5.0
  },
  "langs": [
   "uz",
@@ -514,6 +517,24 @@
    "author": "rev2a",
    "source": "yandex",
    "date": "28.10.2026"
+  },
+  {
+   "text": "rev3",
+   "author": "rev3a",
+   "source": "gis2",
+   "date": ""
+  },
+  {
+   "text": "rev4",
+   "author": "rev4a",
+   "source": "yandex",
+   "date": "22.10.2026"
+  },
+  {
+   "text": "rev5",
+   "author": "rev5a",
+   "source": "yandex",
+   "date": "28.10.2026"
   }
  ],
  "privacy": {
@@ -853,7 +874,19 @@
    "tyH1": "Ariza yuborildi",
    "prUpd": "Yangilangan sana",
    "themeLabel": "Yorug' yoki qorong'i rejim",
-   "scrollHint": "Keyingisi"
+   "scrollHint": "Keyingisi",
+   "gis2": "2GIS",
+   "rev3": "«Yaqinda bu stomatologiyani topdim — omadim keldi. O'z ishining ustasi: tez, puxta va qimmat emas. Doktor Shohruh — haqiqiy usta.»",
+   "rev3a": "Anora",
+   "rev4": "«Eng yaxshi stomatologiya. Breket qo'ydirdim.»",
+   "rev4a": "Akbar U.",
+   "rev5": "«Shohruh Hamzayevich — juda bilimdon stomatolog.»",
+   "rev5a": "Orif I.",
+   "railPrev": "Orqaga",
+   "railNext": "Oldinga",
+   "footPhone": "Telefon",
+   "certsHint": "Chapga va o'ngga suring",
+   "revStatShort": "Yandex Xaritalarda 4,5 va 2GIS da 5,0 reyting"
   },
   "ru": {
    "navHome": "Главная",
@@ -1067,7 +1100,19 @@
    "tyH1": "Заявка отправлена",
    "prUpd": "Обновлено",
    "themeLabel": "Светлая или тёмная тема",
-   "scrollHint": "Дальше"
+   "scrollHint": "Дальше",
+   "gis2": "2GIS",
+   "rev3": "«Недавно нашла эту стоматологию — мне очень повезло. Профессионал своего дела: быстро, аккуратно, недорого. Доктор Шохрух — мастер своего дела.»",
+   "rev3a": "Анора",
+   "rev4": "«Лучшая стоматология. Ставил брекеты.»",
+   "rev4a": "Акбар У.",
+   "rev5": "«Шохрух Хамзаевич — очень грамотный стоматолог.»",
+   "rev5a": "Ориф И.",
+   "railPrev": "Назад",
+   "railNext": "Вперёд",
+   "footPhone": "Телефон",
+   "certsHint": "Листайте влево и вправо",
+   "revStatShort": "Рейтинг 4,5 на Яндекс Картах и 5,0 в 2GIS"
   },
   "en": {
    "navHome": "Home",
@@ -1281,7 +1326,19 @@
    "tyH1": "Request sent",
    "prUpd": "Updated",
    "themeLabel": "Light or dark theme",
-   "scrollHint": "Next"
+   "scrollHint": "Next",
+   "gis2": "2GIS",
+   "rev3": "“I found this clinic recently and I’m lucky I did. A real professional: quick, careful and affordable. Dr. Shokhrukh is a master of his craft.”",
+   "rev3a": "Anora",
+   "rev4": "“The best dental clinic. I got my braces here.”",
+   "rev4a": "Akbar U.",
+   "rev5": "“Shokhrukh Khamzaevich is a very competent dentist.”",
+   "rev5a": "Orif I.",
+   "railPrev": "Previous",
+   "railNext": "Next",
+   "footPhone": "Phone",
+   "certsHint": "Scroll left and right",
+   "revStatShort": "Rated 4.5 on Yandex Maps and 5.0 on 2GIS"
   },
   "zh": {
    "navHome": "首页",
@@ -1495,7 +1552,19 @@
    "tyH1": "预约已发送",
    "prUpd": "更新日期",
    "themeLabel": "浅色或深色主题",
-   "scrollHint": "下一页"
+   "scrollHint": "下一页",
+   "gis2": "2GIS",
+   "rev3": "“最近发现了这家牙科诊所，真幸运。非常专业：快速、细致、价格不贵。Shokhrukh 医生是真正的行家。”",
+   "rev3a": "Anora",
+   "rev4": "“最好的牙科诊所。我在这里做了牙套。”",
+   "rev4a": "Akbar U.",
+   "rev5": "“Shokhrukh Khamzaevich 是一位非常专业的牙医。”",
+   "rev5a": "Orif I.",
+   "railPrev": "上一个",
+   "railNext": "下一个",
+   "footPhone": "电话",
+   "certsHint": "左右滑动查看",
+   "revStatShort": "Yandex 地图评分 4.5，2GIS 评分 5.0"
   }
  }
 }

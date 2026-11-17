@@ -32,6 +32,9 @@ export interface Settings {
   yandex_reviews: string;
   gis: string;
   rev_count: number;
+  instagram: string;
+  rating_yandex: number;
+  rating_gis: number;
   metrika_id: string;
   privacy_retention_days: number;
   privacy_updated: string;

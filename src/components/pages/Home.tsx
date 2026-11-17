@@ -1,25 +1,25 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import type { CSSProperties, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { SITE, S, SERVICE, TG_URL, dict, num, pagePath, type Lang } from '@/content/i18n';
-import FullPage from '../client/FullPage';
 import { StatusPill } from '../client/Live';
 import Roll from '../Roll';
 import { Icon, LangSwitch, Price } from '../ui';
-import { statusLabels } from './shared';
+import { a, statusLabels } from './shared';
 
 const pad = (n: number) => String(n).padStart(2, '0');
-/** entrance order inside a slide */
-const a = (n: number): CSSProperties => ({ ['--a' as string]: n });
+/** 4.5 → «4,5» in Uzbek and Russian, «4.5» elsewhere */
+const rate = (v: number, lang: Lang) => (lang === 'ru' || lang === 'uz' ? v.toFixed(1).replace('.', ',') : v.toFixed(1));
 
 /** The brand mark — arc + dot — with a picture or video inside the dot. */
-function Mark({ children, className = '' }: { children: ReactNode; className?: string }) {
+function Mark({ children, over, className = '' }: { children?: ReactNode; over?: ReactNode; className?: string }) {
   return (
     <div className={`mark ${className}`}>
       <svg className="mark-arc" viewBox="-110 -110 220 220" aria-hidden="true">
         <path d="M61.1 -84.1A104 104 0 0 1 -61.1 84.1" pathLength={1} />
       </svg>
       <div className="mark-dot">{children}</div>
+      {over}
       <span className="mark-end" data-dot aria-hidden="true" />
     </div>
   );
@@ -34,15 +34,11 @@ export default function Home({ lang }: { lang: Lang }) {
   const plan = SITE.plan.map(SERVICE);
   const total = plan.reduce((s, x) => s + (x.p ?? 0), 0);
   const caption = Object.fromEntries(SITE.videos);
-  const heroVid = SITE.home_videos[1] ?? SITE.home_videos[0];
-  const labels = [t.navHome, t.planTitle, t.navServices, t.howEyebrow, t.navDoctor, t.navClinic, t.navReviews, t.ctaShort].map((x) => x ?? '');
-
   return (
-    <div className="fp">
-      <FullPage labels={labels} hint={t.scrollHint ?? '↓'} />
+    <>
 
       {/* 01 — the promise */}
-      <section className="fp-slide s-hero" id="start" data-tone="paper">
+      <section className="fp-slide s-hero" id="start" data-label={t.navHome ?? ''} data-tone="paper">
         <div className="fp-in wrap">
           <div className="hero-grid">
             <div className="hero-copy">
@@ -55,20 +51,38 @@ export default function Home({ lang }: { lang: Lang }) {
                 </Link>
                 <a className="btn btn-quiet" href={TG_URL} target="_blank" rel="noopener" data-goal="tg"><Icon id="i-send" /><span>Telegram</span></a>
               </div>
-              <div className="hero-meta a" style={a(5)}>
+              <ul className="hero-proof a" style={a(5)}>
+                <li><b>★ {rate(S.rating_yandex, lang)}</b><span>{t.yandex}</span></li>
+                <li><b>★ {rate(S.rating_gis, lang)}</b><span>{t.gis2}</span></li>
+                <li><b>{S.rev_count}+</b><span>{t.revStatP}</span></li>
+              </ul>
+              <div className="hero-meta a" style={a(6)}>
                 <StatusPill labels={statusLabels(lang)} />
                 <a href={`tel:${S.phone}`} data-goal="tel">{S.phone_display}</a>
               </div>
             </div>
-            <Mark className="hero-mark">
-              <video src={`/media/${heroVid}.mp4`} poster={`/media/${heroVid}.jpg`} autoPlay muted loop playsInline preload="metadata" aria-hidden="true" />
-            </Mark>
+            <Mark className="hero-mark" over={
+              <>
+                {/* the doctor stands in the brand dot; his head rises past its edge */}
+                <div className="hero-pop" aria-hidden="true">
+                  <Image src="/brand/doctor-cut.webp" alt="" width={640} height={620} priority sizes="(max-width: 1023px) 70vw, 34vw" quality={80} />
+                </div>
+                <div className="hero-tag hero-tag-doc">
+                  <b>{t.docName}</b>
+                  <span><Roll value="18" /> {t.statExp}</span>
+                </div>
+                <div className="hero-tag hero-tag-free">
+                  <b>0 <small>{t.cur}</small></b>
+                  <span>{t.fact1}</span>
+                </div>
+              </>
+            } />
           </div>
         </div>
       </section>
 
       {/* 02 — the plan, priced before treatment, and the numbers behind it */}
-      <section className="fp-slide s-plan" id="plan" data-tone="soft">
+      <section className="fp-slide s-plan" id="plan" data-label={t.planTitle ?? ''} data-tone="soft">
         <div className="fp-in wrap">
           <div className="plan-copy">
             <p className="kicker a" style={a(0)}>{t.planChip} · {t.planMeta}</p>
@@ -101,7 +115,7 @@ export default function Home({ lang }: { lang: Lang }) {
       </section>
 
       {/* 04 — services */}
-      <section className="fp-slide s-svc" id="services" data-tone="paper">
+      <section className="fp-slide s-svc" id="services" data-label={t.navServices ?? ''} data-tone="paper">
         <div className="fp-in wrap">
           <div className="s-head">
             <div><p className="kicker a" style={a(0)}>{t.homeSvcEyebrow}</p><h2 className="disp" data-split>{t.homeSvcH2}<span className="dot-at" data-dot aria-hidden="true" /></h2></div>
@@ -126,12 +140,12 @@ export default function Home({ lang }: { lang: Lang }) {
       </section>
 
       {/* 05 — the first visit */}
-      <section className="fp-slide s-how" id="visit" data-tone="soft">
+      <section className="fp-slide s-how" id="visit" data-label={t.howEyebrow ?? ''} data-tone="soft">
         <div className="fp-in wrap">
           <div className="s-head"><div><p className="kicker a" style={a(0)}>{t.howEyebrow}</p><h2 className="disp" data-split>{t.howH2}<span className="dot-at" data-dot aria-hidden="true" /></h2></div></div>
           <ol className="steps3">
             {[1, 2, 3].map((n) => (
-              <li key={n} className="a" style={a(2 + n)}>
+              <li key={n} className="a" style={{ ...a(2 + n), ['--i' as string]: n - 1 }}>
                 <span className="n">{pad(n)}</span>
                 <h3>{t[`st${n}t`]}</h3>
                 <p>{t[`st${n}d`]}</p>
@@ -142,7 +156,7 @@ export default function Home({ lang }: { lang: Lang }) {
       </section>
 
       {/* 06 — the doctor */}
-      <section className="fp-slide s-doc" id="doctor" data-tone="ink">
+      <section className="fp-slide s-doc" id="doctor" data-label={t.navDoctor ?? ''} data-tone="mint">
         <div className="fp-in wrap">
           <Mark className="doc-mark">
             <Image src="/brand/doctor.jpg" alt={t.docName ?? ''} width={640} height={640} sizes="(max-width: 1023px) 80vw, 42vh" quality={80} />
@@ -162,7 +176,7 @@ export default function Home({ lang }: { lang: Lang }) {
       </section>
 
       {/* 07 — the clinic */}
-      <section className="fp-slide s-clinic" id="clinic" data-tone="paper">
+      <section className="fp-slide s-clinic" id="clinic" data-label={t.navClinic ?? ''} data-tone="paper">
         <div className="fp-in wrap">
           <div className="s-head">
             <div><p className="kicker a" style={a(0)}>{t.clinicEyebrow}</p><h2 className="disp" data-split>{t.clinicH2}<span className="dot-at" data-dot aria-hidden="true" /></h2></div>
@@ -182,7 +196,7 @@ export default function Home({ lang }: { lang: Lang }) {
       </section>
 
       {/* 08 — patients */}
-      <section className="fp-slide s-rev" id="reviews" data-tone="soft">
+      <section className="fp-slide s-rev" id="reviews" data-label={t.navReviews ?? ''} data-tone="soft">
         <div className="fp-in wrap">
           <div className="rev-big">
             <p className="kicker a" style={a(0)}>{t.revEyebrow}</p>
@@ -195,10 +209,11 @@ export default function Home({ lang }: { lang: Lang }) {
             </div>
           </div>
           <div className="quotes">
-            {SITE.reviews.map((r, i) => (
+            {/* three on the home screen (one from each source and the longest); all of them on the reviews page */}
+            {SITE.reviews.filter((r) => ['rev1', 'rev3', 'rev5'].includes(r.text)).map((r, i) => (
               <figure key={r.text} className="a" style={a(2 + i)}>
                 <blockquote>{t[r.text]}</blockquote>
-                <figcaption><b>{t[r.author]}</b> · {t[r.source]} · {r.date}</figcaption>
+                <figcaption><b>{t[r.author]}</b> · {t[r.source]}{r.date ? ` · ${r.date}` : ''}</figcaption>
               </figure>
             ))}
           </div>
@@ -206,7 +221,7 @@ export default function Home({ lang }: { lang: Lang }) {
       </section>
 
       {/* 08 — book, with everything needed to get here */}
-      <section className="fp-slide s-book" id="book" data-tone="ink">
+      <section className="fp-slide s-book" id="book" data-label={t.ctaShort ?? ''} data-tone="orange">
         <div className="fp-in wrap">
           <div className="book-head">
             <div>
@@ -217,17 +232,17 @@ export default function Home({ lang }: { lang: Lang }) {
             <div className="book-act a" style={a(3)}>
               <Link className="btn btn-primary" href={pagePath('booking', lang)}><span>{t.ctaMain}</span><span className="arr" aria-hidden="true">→</span></Link>
               <a className="btn btn-quiet" href={`tel:${S.phone}`} data-goal="tel"><Icon id="i-phone" /><span>{S.phone_display}</span></a>
-              <a className="btn btn-quiet" href={TG_URL} target="_blank" rel="noopener" data-goal="tg"><Icon id="i-send" /><span>Telegram</span></a>
             </div>
           </div>
           <div className="book-foot a" style={a(4)}>
             <div><span className="lbl">{t.cAddrLbl}</span><span>{t.cAddr}</span><span className="dim">{t.cLandmark}</span></div>
             <div><span className="lbl">{t.cHoursLbl}</span><span>{t.trust2}</span><span className="dim">{t.cSun}: {t.cSunH}</span></div>
+            <div><span className="lbl">{t.navContacts}</span><a href={TG_URL} target="_blank" rel="noopener" data-goal="tg">@{S.telegram}</a><a href={`tel:${S.phone}`} data-goal="tel">{S.phone_display}</a>{S.instagram ? <a href={`https://www.instagram.com/${S.instagram}/`} target="_blank" rel="noopener">Instagram · @{S.instagram}</a> : null}</div>
             <div><span className="lbl">{t.licLbl}</span><span>{t.licShort}</span><Link className="dim" href={pagePath('privacy', lang)}>{t.footPrivacy}</Link></div>
             <div className="book-lang"><LangSwitch lang={lang} page="home" /><span className="dim">{t.foot}</span></div>
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
 }

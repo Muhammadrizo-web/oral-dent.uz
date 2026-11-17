@@ -8,13 +8,15 @@ const QUIET = 170; // ms of wheel silence needed before the next step (swallows 
 const pad = (n: number) => String(n).padStart(2, '0');
 
 /**
- * Full-screen slides for the home page.
+ * Full-screen slides for every page. Labels for the side dots come from each slide's data-label.
+ * A slide taller than the window scrolls inside first; the next wheel step after it reaches its edge moves on.
  * Large screens: one wheel step / key / swipe = one screen, nothing scrolls natively, so nothing can jump.
- * Phones, short windows, reduced motion, or a slide whose content does not fit: ordinary scrolling,
+ * Phones, short windows or reduced motion: ordinary scrolling,
  * and every slide plays its entrance once when it comes into view. The markup is the same in both modes.
  */
-export default function FullPage({ labels, hint }: { labels: string[]; hint: string }) {
+export default function FullPage({ hint }: { hint: string }) {
   const [cur, setCur] = useState(0);
+  const [labels, setLabels] = useState<string[]>([]);
   const [on, setOn] = useState(false);
   const curRef = useRef(0);
   const lock = useRef(0);
@@ -24,7 +26,19 @@ export default function FullPage({ labels, hint }: { labels: string[]; hint: str
     const root = document.documentElement;
     const slides = Array.from(document.querySelectorAll<HTMLElement>('.fp-slide'));
     if (!slides.length) return;
+    const raf0 = requestAnimationFrame(() => setLabels(slides.map((s) => s.dataset.label ?? '')));
     root.classList.add('fp-ready');
+    /* a slide whose content is taller than the window scrolls inside itself */
+    const box = (i: number) => slides[i]?.querySelector<HTMLElement>('.fp-in') ?? null;
+    const canScroll = (i: number, dir: number) => {
+      const b = box(i);
+      if (!b || b.scrollHeight <= b.clientHeight + 2) return false;
+      return dir > 0 ? b.scrollTop + b.clientHeight < b.scrollHeight - 2 : b.scrollTop > 2;
+    };
+    let innerAt = 0; // last time a wheel step was spent scrolling inside a slide
+    const busy = () => !!document.querySelector('.lightbox:not([hidden])') || root.classList.contains('menu-open');
+    const sideways = (e: WheelEvent) => Math.abs(e.deltaX) > Math.abs(e.deltaY)
+      && e.target instanceof Element && !!e.target.closest('.rail-track');
     let reduce = false;
     try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { /* ignore */ }
     const mq = matchMedia('(min-width: 1024px) and (min-height: 660px)');
@@ -85,10 +99,13 @@ export default function FullPage({ labels, hint }: { labels: string[]; hint: str
       const n = Math.max(0, Math.min(slides.length - 1, i));
       const now = performance.now();
       if (n === curRef.current || now < lock.current) return;
-      root.dataset.dir = n > curRef.current ? 'down' : 'up';
+      const down = n > curRef.current;
+      root.dataset.dir = down ? 'down' : 'up';
       curRef.current = n;
       lock.current = now + DUR;
       setCur(n);
+      const b = box(n);
+      if (b) b.scrollTop = down ? 0 : b.scrollHeight;
       paint(n);
       const id = slides[n]?.id;
       if (id) history.replaceState(null, '', n === 0 ? location.pathname + location.search : `#${id}`);
@@ -96,18 +113,20 @@ export default function FullPage({ labels, hint }: { labels: string[]; hint: str
 
     /* ---- input ---- */
     const onWheel = (e: WheelEvent) => {
-      if (!enabled || e.ctrlKey) return;
-      e.preventDefault();
+      if (!enabled || e.ctrlKey || busy() || sideways(e)) return;
       const now = performance.now();
+      const d = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : 0;
+      /* the slide still has content in that direction: let it scroll natively */
+      if (d && canScroll(curRef.current, d) && now >= lock.current) { innerAt = now; lastWheel.current = now; return; }
+      e.preventDefault();
       const quiet = now - lastWheel.current > QUIET;
       lastWheel.current = now;
-      if (!quiet || now < lock.current) return;
-      const d = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : 0;
+      if (!quiet || now < lock.current || now - innerAt < 450) return;
       if (Math.abs(d) < 4) return;
       go(curRef.current + (d > 0 ? 1 : -1));
     };
     const onKey = (e: KeyboardEvent) => {
-      if (!enabled || e.altKey || e.metaKey || e.ctrlKey) return;
+      if (!enabled || e.altKey || e.metaKey || e.ctrlKey || busy()) return;
       const t = e.target instanceof HTMLElement ? e.target : null;
       if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
       const k = e.key;
@@ -118,17 +137,30 @@ export default function FullPage({ labels, hint }: { labels: string[]; hint: str
       else if (k === 'End') to = slides.length - 1;
       if (to === null) return;
       e.preventDefault();
+      const dir = to > curRef.current ? 1 : -1;
+      const b = box(curRef.current);
+      if ((k === 'ArrowDown' || k === 'ArrowUp' || k === 'PageDown' || k === 'PageUp' || k === ' ') && b && canScroll(curRef.current, dir)) {
+        b.scrollBy({ top: dir * b.clientHeight * 0.8, behavior: 'smooth' });
+        return;
+      }
       go(to);
     };
     let ty = 0;
     let tx = 0;
-    const onTouchStart = (e: TouchEvent) => { ty = e.touches[0]?.clientY ?? 0; tx = e.touches[0]?.clientX ?? 0; };
-    const onTouchMove = (e: TouchEvent) => { if (enabled) e.preventDefault(); };
+    let tUp = false;
+    let tDown = false;
+    let tRail = false;
+    const onTouchStart = (e: TouchEvent) => {
+      ty = e.touches[0]?.clientY ?? 0; tx = e.touches[0]?.clientX ?? 0;
+      tUp = canScroll(curRef.current, -1); tDown = canScroll(curRef.current, 1);
+      tRail = e.target instanceof Element && !!e.target.closest('.rail-track');
+    };
+    const onTouchMove = (e: TouchEvent) => { if (enabled && !tUp && !tDown && !tRail && !busy()) e.preventDefault(); };
     const onTouchEnd = (e: TouchEvent) => {
-      if (!enabled) return;
+      if (!enabled || busy()) return;
       const dy = ty - (e.changedTouches[0]?.clientY ?? ty);
       const dx = tx - (e.changedTouches[0]?.clientX ?? tx);
-      if (Math.abs(dy) > 50 && Math.abs(dy) > Math.abs(dx)) go(curRef.current + (dy > 0 ? 1 : -1));
+      if (Math.abs(dy) > 50 && Math.abs(dy) > Math.abs(dx) && !(dy > 0 ? tDown : tUp)) go(curRef.current + (dy > 0 ? 1 : -1));
     };
     /* in-page links (#plan, #book …) move to their slide */
     const onClick = (e: MouseEvent) => {
@@ -150,16 +182,11 @@ export default function FullPage({ labels, hint }: { labels: string[]; hint: str
     };
 
     /* ---- modes ---- */
-    const fits = () => slides.every((s) => {
-      const inner = s.querySelector<HTMLElement>('.fp-in');
-      return !inner || inner.scrollHeight <= window.innerHeight + 2;
-    });
 
     const enable = () => {
       io?.disconnect(); io = null;
       root.classList.add('fp');
       window.scrollTo(0, 0);
-      if (!fits()) { root.classList.remove('fp'); flow(); return; }
       enabled = true;
       setOn(true);
       const fromHash = slides.findIndex((s) => `#${s.id}` === location.hash);
@@ -186,7 +213,7 @@ export default function FullPage({ labels, hint }: { labels: string[]; hint: str
     const decide = () => { if (mq.matches && !reduce) enable(); else flow(); };
     decide();
     let rz = 0;
-    const onResize = () => { window.clearTimeout(rz); rz = window.setTimeout(() => { if (mq.matches && !reduce) { if (!fits()) flow(); else if (!enabled) enable(); else fly(curRef.current, false); } }, 200); };
+    const onResize = () => { window.clearTimeout(rz); rz = window.setTimeout(() => { if (mq.matches && !reduce) { if (!enabled) enable(); else fly(curRef.current, false); } }, 200); };
     mq.addEventListener?.('change', decide);
     window.addEventListener('resize', onResize);
     window.addEventListener('wheel', onWheel, { passive: false });
@@ -200,6 +227,7 @@ export default function FullPage({ labels, hint }: { labels: string[]; hint: str
     window.addEventListener('fp:go', nav);
 
     return () => {
+      cancelAnimationFrame(raf0);
       mq.removeEventListener?.('change', decide);
       window.removeEventListener('resize', onResize);
       window.removeEventListener('wheel', onWheel);
@@ -232,7 +260,7 @@ export default function FullPage({ labels, hint }: { labels: string[]; hint: str
       <span className="fp-dot" aria-hidden="true" />
       <div className="fp-count" aria-hidden="true">
         <span className="now">{pad(cur + 1)}</span>
-        <span className="bar"><i style={{ transform: `scaleX(${(cur + 1) / labels.length})` }} /></span>
+        <span className="bar"><i style={{ transform: `scaleX(${(cur + 1) / Math.max(1, labels.length)})` }} /></span>
         <span>{pad(labels.length)}</span>
       </div>
       <button type="button" className="fp-next" aria-label={hint} hidden={cur >= labels.length - 1} onClick={() => goTo(cur + 1)}>

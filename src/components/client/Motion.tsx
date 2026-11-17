@@ -89,7 +89,8 @@ export default function Motion({ lang, isHome, homes, metrikaId }: {
   useEffect(() => {
     const root = document.documentElement;
     if (reduceMotion() || !('IntersectionObserver' in window)) return;
-    const els = Array.from(document.querySelectorAll<HTMLElement>(REVEAL));
+    /* slides of a full-screen page play their own entrance (FullPage), so they are left out here */
+    const els = Array.from(document.querySelectorAll<HTMLElement>(REVEAL)).filter((el) => !el.closest('.fp-slide'));
     if (!els.length) return;
     const io = new IntersectionObserver((entries) => {
       for (const en of entries) {

@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { dict, type Lang } from '@/content/i18n';
 
 export function statusLabels(lang: Lang) {
@@ -11,3 +12,6 @@ export function statusLabels(lang: Lang) {
     stNight: t.stNight ?? '',
   };
 }
+
+/** entrance order inside a slide: elements marked .a rise one after another when their slide becomes current */
+export const a = (n: number): CSSProperties => ({ ['--a' as string]: n });

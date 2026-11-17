@@ -1,9 +1,9 @@
-import Image from 'next/image';
 import Link from 'next/link';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import ill from '@/content/ill.json';
-import { Count } from './client/Live';
-import { SITE, S, TG_URL, dict, num, pagePath, type Lang, type PageKey, type Service } from '@/content/i18n';
+import Rail from './client/Rail';
+import { a } from './pages/shared';
+import { SITE, dict, num, pagePath, type Lang, type PageKey, type Service } from '@/content/i18n';
 
 const ILL = ill as Record<string, string>;
 
@@ -36,70 +36,46 @@ export function TgIcon() {
   return <Icon id="i-send" />;
 }
 
+/** One full-screen page of the site (see FullPage). */
+export function Slide({ id, tone = 'paper', label, className = '', children }: { id: string; tone?: string; label: string; className?: string; children: ReactNode }) {
+  return (
+    <section className={`fp-slide ${className}`} id={id} data-tone={tone} data-label={label}>
+      <div className="fp-in wrap">{children}</div>
+    </section>
+  );
+}
+
+/** Breadcrumbs, the page title and its lead — the opening of every inner page. */
 export function PageHead({ lang, crumb, h1, lead }: { lang: Lang; crumb: string; h1: string; lead?: string }) {
   const t = dict(lang);
   return (
     <div className="phead">
-      <div className="wrap">
-        <nav className="crumbs x-in" aria-label="Breadcrumb">
-          <Link href={pagePath('home', lang)}>{t.navHome}</Link>
-          <span aria-hidden="true">/</span>
-          <span>{crumb}</span>
-        </nav>
-        <h1 data-split>{h1}</h1>
-        {lead ? <p className="lead x-in" style={{ ['--d' as string]: '.45s' }}>{lead}</p> : null}
-      </div>
+      <nav className="crumbs a" style={a(0)} aria-label="Breadcrumb">
+        <Link href={pagePath('home', lang)}>{t.navHome}</Link>
+        <span aria-hidden="true">/</span>
+        <span>{crumb}</span>
+      </nav>
+      <h1 data-split>{h1}<span className="dot-at" data-dot aria-hidden="true" /></h1>
+      {lead ? <p className="lead a" style={a(2)}>{lead}</p> : null}
     </div>
   );
 }
 
-export function Cta({ lang }: { lang: Lang }) {
-  const t = dict(lang);
-  return (
-    <div className="cta">
-      <div className="wrap">
-        <div className="cta-card" data-scrub>
-          <svg className="orb" viewBox="0 0 220 220" aria-hidden="true"><use href="#mk" /></svg>
-          <div className="cta-txt">
-            <h2>{t.ctaH}</h2>
-            <p className="t">{t.ctaP}</p>
-          </div>
-          <div className="cta-act">
-            <Link className="btn btn-ink" data-magnetic href={pagePath('booking', lang)}>
-              <span>{t.ctaMain}</span><span className="arr" aria-hidden="true">→</span>
-            </Link>
-            <a className="btn btn-line" href={TG_URL} target="_blank" rel="noopener" data-goal="tg"><TgIcon /><span>Telegram</span></a>
-            <p className="cta-phone">{t.orCall} <a href={`tel:${S.phone}`} data-goal="tel">{S.phone_display}</a></p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
+/** Patient reviews: the count and ratings, then the reviews in a row that scrolls sideways. */
 export function Reviews({ lang }: { lang: Lang }) {
   const t = dict(lang);
   return (
-    <div className="revs">
-      <article className="rev stat">
-        <svg className="mk" viewBox="0 0 220 220" aria-hidden="true"><use href="#mk" /></svg>
-        <span className="big"><Count to={S.rev_count} /><span>+</span></span>
-        <p>{t.revStatP}</p>
-        <div className="links">
-          <a href={S.yandex_reviews} target="_blank" rel="noopener">{t.revLink}</a>
-          <a href={S.gis} target="_blank" rel="noopener">{t.revLink2}</a>
-        </div>
-      </article>
+    <Rail className="revs a" prev={t.railPrev ?? '←'} next={t.railNext ?? '→'}>
       {SITE.reviews.map((r) => (
         <article className="rev" key={r.text}>
           <blockquote>{t[r.text]}</blockquote>
           <footer>
             <span><b>{t[r.author]}</b> · {t[r.source]}</span>
-            <span>{r.date}</span>
+            {r.date ? <span>{r.date}</span> : null}
           </footer>
         </article>
       ))}
-    </div>
+    </Rail>
   );
 }
 
@@ -114,17 +90,6 @@ export function ServiceCard({ sv, lang }: { sv: Service; lang: Lang }) {
         <Link className="linkbtn" href={`${pagePath('booking', lang)}?s=${sv.id}`}>{t.book}</Link>
       </div>
     </article>
-  );
-}
-
-export function DoctorPhoto({ lang, eager = false }: { lang: Lang; eager?: boolean }) {
-  const t = dict(lang);
-  return (
-    <div className="photo">
-      <Image src="/brand/doctor.jpg" alt={t.docName ?? ''} width={640} height={640}
-        sizes="(max-width: 820px) 340px, 440px" quality={80} loading={eager ? 'eager' : 'lazy'} />
-      <span className="photo-dot" aria-hidden="true" />
-    </div>
   );
 }
 

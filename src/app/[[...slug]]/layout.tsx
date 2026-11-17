@@ -4,6 +4,7 @@ import { preload } from 'react-dom';
 import { LANGS, ROUTES, SITE, S, dict, pagePath, resolveRoute, type Lang } from '@/content/i18n';
 import { SPRITE } from '@/content/sprite';
 import { MobileBar, SiteFooter, SiteHeader } from '@/components/Chrome';
+import FullPage from '@/components/client/FullPage';
 import Motion from '@/components/client/Motion';
 import Cursor from '@/components/client/Cursor';
 import { THEME_BOOT } from '@/components/client/Theme';
@@ -47,8 +48,14 @@ export default async function RootLayout({ children, params }: { children: React
         <span className="page-prog" aria-hidden="true" />
         <div aria-hidden="true" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: SPRITE }} />
         <SiteHeader lang={lang} page={page} />
-        <main id="main" key={`${lang}-${page}`}>{children}</main>
-        <SiteFooter lang={lang} page={page} />
+        {/* every page is a run of full-screen slides; the footer is the last slide of each inner page */}
+        <main id="main" key={`${lang}-${page}`}>
+          <div className="fp">
+            <FullPage hint={t.scrollHint ?? '↓'} />
+            {children}
+            {page === 'home' ? null : <SiteFooter lang={lang} page={page} />}
+          </div>
+        </main>
         <MobileBar lang={lang} />
         <Cursor />
         <Motion lang={lang} isHome={page === 'home'} metrikaId={metrika}
