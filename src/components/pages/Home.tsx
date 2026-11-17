@@ -88,13 +88,13 @@ export default function Home({ lang }: { lang: Lang }) {
             <p className="kicker a" style={a(0)}>{t.planChip} · {t.planMeta}</p>
             <h2 className="disp" data-split>{t.planTitle}</h2>
             <p className="lead a" style={a(2)}>{t.planNote}</p>
-            <ul className="nums a" style={a(3)}>
-              <li><b>0<small>{t.cur}</small></b><span>{t.fact1}</span></li>
-              <li><b><Roll value="18" /><small>{t.yrs}</small></b><span>{t.fact2}</span></li>
-              <li><b><Roll value="7" /></b><span>{t.fact3}</span></li>
-              <li><b>{t.fact4big}</b><span>{t.fact4}</span></li>
-            </ul>
           </div>
+          <ul className="nums a" style={a(3)}>
+            <li><b>0<small>{t.cur}</small></b><span>{t.fact1}</span></li>
+            <li><b><Roll value="18" /><small>{t.yrs}</small></b><span>{t.fact2}</span></li>
+            <li><b><Roll value="7" /></b><span>{t.fact3}</span></li>
+            <li><b>{t.fact4big}</b><span>{t.fact4}</span></li>
+          </ul>
           <div className="bill">
             <ul>
               {plan.map((sv, i) => (

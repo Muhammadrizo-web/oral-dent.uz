@@ -56,7 +56,7 @@
   --peach:#FBE2CC; --peach-ink:#121212; --soft:#ECEAE4; --soft-2:#E2DFD8; --soft-card:#F6F5F2;
   --panel:#121212; --on-panel:#F6F5F2; --on-panel-2:#A3A19C; --panel-line:rgba(246,245,242,.14);
   --ok:#1FA67A; --bad:#C2401F;
-  --mint:#7DDCC0; --mint-2:#5FCDAB; --mint-bg:#93D9C2; --mint-bg-ink:#121212; --btn-hover:var(--accent);
+  --mint:#7DDCC0; --mint-2:#5FCDAB; --mint-bg:#84C2AE; --mint-bg-ink:#121212; --btn-hover:var(--accent);
   --hdr-bg:rgba(246,245,242,.82);
   --shadow:0 1px 1px rgba(0,0,0,.04),0 40px 80px -40px rgba(0,0,0,.3);
   color-scheme:light;
@@ -310,7 +310,10 @@ html.fp{--fp-in:.25s}
 .status{font-size:13px;color:var(--ink-2)}
 
 /* 02 plan */
-.s-plan .fp-in{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:center;gap:clamp(32px,7vw,130px)}
+.s-plan .fp-in{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:stretch;align-content:center;column-gap:clamp(32px,7vw,130px);row-gap:clamp(28px,5vh,56px)}
+.s-plan .plan-copy{grid-column:1/-1}
+.s-plan .nums{margin:0;max-width:none;grid-template-rows:repeat(2,minmax(0,1fr))}
+.s-plan .nums li{justify-content:center}
 .plan-copy{display:flex;flex-direction:column;gap:18px}
 .plan-copy .lead{max-width:38ch;font-size:15.5px}
 .bill ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--line-2)}
